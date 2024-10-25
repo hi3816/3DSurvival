@@ -19,7 +19,9 @@ public class PlayerController : MonoBehaviour
     private float camCurXRot;
     public float lookSensitivity;   //민감도
     private Vector2 mouseDelta;
+    public bool canLook = true;
 
+    public Action inventory;
     private Rigidbody _rigidbody;
 
     private void Awake()
@@ -35,8 +37,16 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         Move();
-        CameraLook();
     }
+
+    private void LateUpdate()
+    {
+        if (canLook)
+        {
+            CameraLook();
+        }
+    }
+
 
     void Move()
     {
@@ -102,5 +112,24 @@ public class PlayerController : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void OnInventory(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            inventory?.Invoke();
+            ToggleCursor();
+        }
+    }
+
+    void ToggleCursor()
+    {
+        //커서락모드가 켜져있으면 true
+        bool toggle = Cursor.lockState == CursorLockMode.Locked; 
+        //커서락모드가 켜져있으면 꺼주고 커서락모드가 꺼져있으면 다시 켜준다 (true라면 꺼주고 false라면 켜준다)
+        Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
+        //toggle이 true라면 커서락모드를 꺼놓도록했다. 이때는 마우스를 볼 수 있기때문에 주위를 볼 수 없도록 설정해준다.
+        canLook = !toggle;
     }
 }
