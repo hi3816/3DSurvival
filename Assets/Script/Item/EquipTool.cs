@@ -7,6 +7,7 @@ public class EquipTool : Equip
     public float attackRate;        // 공격 속도 (공격 간격을 나타내는 시간 간격)
     private bool attacking;          // 현재 공격 중인지 여부를 나타내는 변수
     public float attackDistance;     // 공격할 수 있는 최대 거리
+    public float useStamina;
 
     [Header("Resource Gathering")]
     public bool doesGatherResources; // 자원을 채집할 수 있는지 여부를 나타내는 변수
@@ -28,9 +29,12 @@ public class EquipTool : Equip
     {
         if (!attacking)
         {
-            attacking = true;
-            animator.SetTrigger("Attack");
-            Invoke("OnCanAttack", attackRate);
+            if (CharacterManager.Instance.Player.condition.UseStamina(useStamina))
+            {
+                attacking = true;
+                animator.SetTrigger("Attack");
+                Invoke("OnCanAttack", attackRate);
+            }
         }
     }
 
