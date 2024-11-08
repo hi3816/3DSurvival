@@ -32,6 +32,7 @@ public class EquipTool : Equip
             if (CharacterManager.Instance.Player.condition.UseStamina(useStamina))
             {
                 attacking = true;
+
                 animator.SetTrigger("Attack");
                 Invoke("OnCanAttack", attackRate);
             }
@@ -53,6 +54,10 @@ public class EquipTool : Equip
             if(doesGatherResources && hit.collider.TryGetComponent(out Resource resource))
             {
                 resource.Gather(hit.point, hit.normal);
+            }
+            if (doesDealDamage && hit.collider.TryGetComponent(out NPC npc))
+            {
+                npc.TakePhysicalDamage(damage);
             }
         }
     }
